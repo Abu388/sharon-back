@@ -20,6 +20,11 @@ export const navigationItems: NavItem[] = [
       href: "/services",
       description: "The services we give",
     },
+     {
+      title: "Admin",
+      href: "/admin",
+      description: "Admin page",
+    },
     {
       title: "Resources",
       href: "/images",
