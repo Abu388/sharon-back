@@ -1,11 +1,11 @@
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import DonorInfoStep from "@/components/donor-info-step"
-import DonationAmountStep from "@/components/donation-amount-step"
-import PaymentMethodStep from "@/components/payment-method-step"
-import ReviewStep from "@/components/review-step"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import DonorInfoStep from "@/components/donor-info-step";
+import DonationAmountStep from "@/components/donation-amount-step";
+import PaymentMethodStep from "@/components/payment-method-step";
+import ReviewStep from "@/components/review-step";
 
 export default function DonationForm() {
   const [formData, setFormData] = useState({
@@ -30,45 +30,106 @@ export default function DonationForm() {
 
     // Payment Method
     paymentMethod: "credit_card",
-  })
-
-  const [currentStep, setCurrentStep] = useState(1)
-  const totalSteps = 4
+  });
+  const [receiptFile, setReceiptFile] = useState<File | null>(null);
+  const [currentStep, setCurrentStep] = useState(1);
+  const totalSteps = 4;
 
   const updateFormData = (data: Partial<typeof formData>) => {
-    setFormData({ ...formData, ...data })
-  }
+    setFormData({ ...formData, ...data });
+  };
 
   const nextStep = () => {
     if (currentStep < totalSteps) {
-      setCurrentStep(currentStep + 1)
-      window.scrollTo(0, 0)
+      setCurrentStep(currentStep + 1);
+      window.scrollTo(0, 0);
     }
-  }
+  };
 
   const prevStep = () => {
     if (currentStep > 1) {
-      setCurrentStep(currentStep - 1)
-      window.scrollTo(0, 0)
+      setCurrentStep(currentStep - 1);
+      window.scrollTo(0, 0);
     }
-  }
+  };
+
+  const handleReceiptUpload = (file: File) => {
+    // Validate file size (5MB max)
+    if (file.size > 5 * 1024 * 1024) {
+      alert("File size must be less than 5MB");
+      return;
+    }
+    // Validate file type
+    const validTypes = ["image/jpeg", "image/png", "application/pdf"];
+    if (!validTypes.includes(file.type)) {
+      alert("Please upload a JPG, PNG, or PDF file");
+      return;
+    }
+    setReceiptFile(file);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    // Here you would typically process the payment and send the data to your backend
-    console.log("Donation submitted:", formData)
-    // For demo purposes, we'll just show an alert
-    alert("Thank you for your donation!")
-  }
+    e.preventDefault();
+
+    // Validate receipt upload for bank transfer
+    if (formData.paymentMethod === "bank_transfer" && !receiptFile) {
+      alert("Please upload your bank transfer receipt before submitting");
+      return;
+    }
+
+    // Here you would typically:
+    // 1. Create a FormData object
+    // 2. Append the receipt file
+    // 3. Append other form data
+    // 4. Send to your backend
+    const formDataToSend = new FormData();
+    if (receiptFile) {
+      formDataToSend.append("receipt", receiptFile);
+    }
+    Object.entries(formData).forEach(([key, value]) => {
+      if (typeof value === "object") {
+        formDataToSend.append(key, JSON.stringify(value));
+      } else {
+        formDataToSend.append(key, String(value));
+      }
+    });
+
+    // For demo purposes, we'll just log the data
+    console.log("Donation submitted:", {
+      formData,
+      receiptFile: receiptFile
+        ? {
+            name: receiptFile.name,
+            type: receiptFile.type,
+            size: receiptFile.size,
+          }
+        : null,
+    });
+
+    // Simulate API call
+    alert("Thank you for your donation! Your receipt has been uploaded.");
+  };
 
   const renderStep = () => {
     switch (currentStep) {
       case 1:
-        return <DonorInfoStep formData={formData} updateFormData={updateFormData} />
+        return (
+          <DonorInfoStep formData={formData} updateFormData={updateFormData} />
+        );
       case 2:
-        return <DonationAmountStep formData={formData} updateFormData={updateFormData} />
+        return (
+          <DonationAmountStep
+            formData={formData}
+            updateFormData={updateFormData}
+          />
+        );
       case 3:
-        return <PaymentMethodStep formData={formData} updateFormData={updateFormData} />
+        return (
+          <PaymentMethodStep
+            formData={formData}
+            updateFormData={updateFormData}
+          />
+        );
       case 4:
         return (
           <ReviewStep
@@ -80,32 +141,41 @@ export default function DonationForm() {
                 quantity: String(m.quantity),
               })),
             }}
+            onReceiptUpload={handleReceiptUpload}
           />
-        )
+        );
       default:
-        return null
+        return null;
     }
-  }
+  };
 
-  const stepTitles = ["Donor Information", "Donation Amount", "Payment Method", "Review"]
+  const stepTitles = [
+    "Donor Information",
+    "Donation Amount",
+    "Payment Method",
+    "Review",
+  ];
 
   return (
-    <div className="max-w-4xl mx-auto bg-white shadow-sm rounded-lg p-8">
-      <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">Complete Your Donation</h2>
-        <p className="text-gray-600 max-w-3xl mx-auto">
-          Your donation helps us provide care, education, and support to children in need.
+    <div className="mx-auto max-w-4xl rounded-lg bg-white p-8 shadow-sm">
+      <div className="mb-8 text-center">
+        <h2 className="mb-2 text-2xl font-bold text-gray-800">
+          Complete Your Donation
+        </h2>
+        <p className="mx-auto max-w-3xl text-gray-600">
+          Your donation helps us provide care, education, and support to
+          children in need.
         </p>
       </div>
 
       <div className="mb-8">
-        <div className="flex justify-between mb-2">
+        <div className="mb-2 flex justify-between">
           {stepTitles.map((title, index) => (
             <div
               key={index}
               className={`text-center ${
                 currentStep === index + 1
-                  ? "text-blue-600 font-medium"
+                  ? "font-medium text-blue-600"
                   : currentStep > index + 1
                     ? "text-blue-400"
                     : "text-gray-400"
@@ -116,20 +186,29 @@ export default function DonationForm() {
             </div>
           ))}
         </div>
-        <div className="w-full bg-gray-200 h-2 rounded-full">
+        <div className="h-2 w-full rounded-full bg-gray-200">
           <div
-            className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+            className="h-2 rounded-full bg-blue-600 transition-all duration-300"
             style={{ width: `${(currentStep / totalSteps) * 100}%` }}
           ></div>
         </div>
       </div>
 
-      <form onSubmit={currentStep === totalSteps ? handleSubmit : (e) => e.preventDefault()}>
+      <form
+        onSubmit={
+          currentStep === totalSteps ? handleSubmit : (e) => e.preventDefault()
+        }
+      >
         <div className="mb-8">{renderStep()}</div>
 
         <div className="flex justify-between">
           {currentStep > 1 && (
-            <Button type="button" variant="outline" onClick={prevStep} className="px-6 py-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={prevStep}
+              className="px-6 py-2"
+            >
               ⬅ Go Back
             </Button>
           )}
@@ -137,17 +216,20 @@ export default function DonationForm() {
             <Button
               type="button"
               onClick={nextStep}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 ml-auto"
+              className="ml-auto bg-blue-600 px-6 py-2 text-white hover:bg-blue-700"
             >
               Continue
             </Button>
           ) : (
-            <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 ml-auto">
+            <Button
+              type="submit"
+              className="ml-auto bg-blue-600 px-6 py-2 text-white hover:bg-blue-700"
+            >
               Confirm Donation
             </Button>
           )}
         </div>
       </form>
     </div>
-  )
+  );
 }

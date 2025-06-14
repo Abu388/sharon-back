@@ -20,7 +20,7 @@ const routes = createBrowserRouter([
       { path: "join-us", element: <JoinUs /> },
       { path: "donation", element: <Donation /> },
       { path: "books", element: <Books /> },
-      { path: "admin", element: <AdminPage /> },
+      { path: "dashboard", element: <AdminPage /> },
     ],
   },
 ]);

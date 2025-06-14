@@ -10,7 +10,7 @@ import { NavLink } from "react-router-dom";
 const Nav = () => {
   return (
     <nav className="hidden space-x-6 font-[poppins] md:inline-flex">
-      {navigationItems.slice(1).map((item, index) =>
+      {navigationItems.map((item, index) =>
         item.children ? (
           <NavigationMenu>
             <NavigationMenuList>
