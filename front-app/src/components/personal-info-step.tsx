@@ -1,68 +1,82 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface PersonalInfoStepProps {
   formData: {
-    fullName: string
-    phone: string
-    address: string
-    email: string
-    country: string
-    church: string
-    office: string
-  }
-  updateFormData: (data: Partial<PersonalInfoStepProps["formData"]>) => void
+    fullName: string;
+    password: string;
+    phone: string;
+    address: string;
+    email: string;
+    country: string;
+    church: string;
+    office: string;
+  };
+  updateFormData: (data: Partial<PersonalInfoStepProps["formData"]>) => void;
 }
 
-export default function PersonalInfoStep({ formData, updateFormData }: PersonalInfoStepProps) {
+export default function PersonalInfoStep({
+  formData,
+  updateFormData,
+}: PersonalInfoStepProps) {
   const [errors, setErrors] = useState({
     fullName: "",
     phone: "",
     email: "",
     password: "",
-  })
+  });
 
   const validateEmail = (email: string) => {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    return re.test(email)
-  }
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  };
 
   const handleBlur = (field: keyof typeof errors) => {
-    const newErrors = { ...errors }
+    const newErrors = { ...errors };
 
     if (field === "fullName" && !formData.fullName) {
-      newErrors.fullName = "Full name is required"
+      newErrors.fullName = "Full name is required";
     } else if (field === "fullName") {
-      newErrors.fullName = ""
+      newErrors.fullName = "";
     }
 
     if (field === "phone" && !formData.phone) {
-      newErrors.phone = "Phone number is required"
+      newErrors.phone = "Phone number is required";
     } else if (field === "phone") {
-      newErrors.phone = ""
+      newErrors.phone = "";
     }
 
     if (field === "email") {
       if (!formData.email) {
-        newErrors.email = "Email is required"
+        newErrors.email = "Email is required";
       } else if (!validateEmail(formData.email)) {
-        newErrors.email = "Please enter a valid email address"
+        newErrors.email = "Please enter a valid email address";
       } else {
-        newErrors.email = ""
+        newErrors.email = "";
       }
     }
 
-    setErrors(newErrors)
-  }
+    if (field === "password") {
+      if (!formData.password) {
+        newErrors.password = "Password is required";
+      } else if (formData.password.length < 6) {
+        newErrors.password = "Password must be at least 6 characters";
+      } else {
+        newErrors.password = "";
+      }
+    }
+
+    setErrors(newErrors);
+  };
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="fullName" className="text-gray-700 text-base">
+          <Label htmlFor="fullName" className="text-base text-gray-700">
             Full Name <span className="text-red-500">*</span>
           </Label>
           <Input
@@ -74,11 +88,13 @@ export default function PersonalInfoStep({ formData, updateFormData }: PersonalI
             required
             className="h-12 text-base"
           />
-          {errors.fullName && <p className="text-sm text-red-500">{errors.fullName}</p>}
+          {errors.fullName && (
+            <p className="text-sm text-red-500">{errors.fullName}</p>
+          )}
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="phone" className="text-gray-700 text-base">
+          <Label htmlFor="phone" className="text-base text-gray-700">
             Phone <span className="text-red-500">*</span>
           </Label>
           <Input
@@ -91,11 +107,13 @@ export default function PersonalInfoStep({ formData, updateFormData }: PersonalI
             required
             className="h-12 text-base"
           />
-          {errors.phone && <p className="text-sm text-red-500">{errors.phone}</p>}
+          {errors.phone && (
+            <p className="text-sm text-red-500">{errors.phone}</p>
+          )}
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="email" className="text-gray-700 text-base">
+          <Label htmlFor="email" className="text-base text-gray-700">
             Email <span className="text-red-500">*</span>
           </Label>
           <Input
@@ -108,11 +126,31 @@ export default function PersonalInfoStep({ formData, updateFormData }: PersonalI
             required
             className="h-12 text-base"
           />
-          {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
+          {errors.email && (
+            <p className="text-sm text-red-500">{errors.email}</p>
+          )}
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="password" className="text-base text-gray-700">
+            Password <span className="text-red-500">*</span>
+          </Label>
+          <Input
+            id="password"
+            type="password"
+            value={formData.password}
+            onChange={(e) => updateFormData({ password: e.target.value })}
+            onBlur={() => handleBlur("password")}
+            placeholder="Enter your password"
+            required
+            className="h-12 text-base"
+          />
+          {errors.password && (
+            <p className="text-sm text-red-500">{errors.password}</p>
+          )}
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="address" className="text-gray-700 text-base">
+          <Label htmlFor="address" className="text-base text-gray-700">
             Address
           </Label>
           <Input
@@ -125,7 +163,7 @@ export default function PersonalInfoStep({ formData, updateFormData }: PersonalI
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="country" className="text-gray-700 text-base">
+          <Label htmlFor="country" className="text-base text-gray-700">
             Country
           </Label>
           <Input
@@ -138,7 +176,7 @@ export default function PersonalInfoStep({ formData, updateFormData }: PersonalI
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="church" className="text-gray-700 text-base">
+          <Label htmlFor="church" className="text-base text-gray-700">
             Church Where You Worship
           </Label>
           <Input
@@ -151,7 +189,7 @@ export default function PersonalInfoStep({ formData, updateFormData }: PersonalI
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="office" className="text-gray-700 text-base">
+          <Label htmlFor="office" className="text-base text-gray-700">
             Office
           </Label>
           <Input
@@ -164,5 +202,5 @@ export default function PersonalInfoStep({ formData, updateFormData }: PersonalI
         </div>
       </div>
     </div>
-  )
+  );
 }

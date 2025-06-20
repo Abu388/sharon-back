@@ -1,15 +1,15 @@
-import type React from "react"
-
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import PersonalInfoStep from "@/components/personal-info-step"
-import PartnershipWaysStep from "@/components/partnership-ways-step"
-import ProfessionalSupportStep from "@/components/professional-support-step"
-import MaterialSupportStep from "@/components/material-support-step"
-import ReviewStep from "@/components/review-step"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import PersonalInfoStep from "@/components/personal-info-step";
+import PartnershipWaysStep from "@/components/partnership-ways-step";
+import ProfessionalSupportStep from "@/components/professional-support-step";
+import ReviewStep from "@/components/review-step";
+import { toast } from "sonner";
+import { CircleAlert } from "lucide-react";
+import ApiClient from "@/api/ApiClient";
 
 export default function JoinUsForm() {
-  const [currentStep, setCurrentStep] = useState(1)
+  const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     // Personal Information
     fullName: "",
@@ -27,81 +27,128 @@ export default function JoinUsForm() {
     // Professional Support
     professionalSupport: [] as string[],
     otherExpertise: "",
+  });
 
-    // Material Support
-    materials: [
-      { type: "", quantity: "" },
-      { type: "", quantity: "" },
-      { type: "", quantity: "" },
-    ],
-    message: "",
-  })
-
-  const totalSteps = 5
+  const totalSteps = 4;
 
   const updateFormData = (data: Partial<typeof formData>) => {
-    setFormData({ ...formData, ...data })
-  }
+    setFormData({ ...formData, ...data });
+  };
+
+  const validateStep = () => {
+    switch (currentStep) {
+      case 1:
+        return (
+          formData.fullName &&
+          formData.email &&
+          formData.phone &&
+          formData.password
+        );
+      case 2:
+        return formData.partnerWays.length > 0;
+      case 3:
+        return (
+          formData.professionalSupport.length > 0 || formData.otherExpertise
+        );
+      default:
+        return true;
+    }
+  };
 
   const nextStep = () => {
     if (currentStep < totalSteps) {
-      setCurrentStep(currentStep + 1)
-      window.scrollTo(0, 0)
+      if (validateStep()) {
+        setCurrentStep(currentStep + 1);
+        window.scrollTo(0, 0);
+      } else {
+        toast.error("Please fill in all required fields before proceeding.", {
+          icon: <CircleAlert className="text-red-500" />,
+        });
+      }
     }
-  }
+  };
 
   const prevStep = () => {
     if (currentStep > 1) {
-      setCurrentStep(currentStep - 1)
-      window.scrollTo(0, 0)
+      setCurrentStep(currentStep - 1);
+      window.scrollTo(0, 0);
     }
-  }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    // Here you would typically send the data to your backend
-    console.log("Form submitted:", formData)
-    // For demo purposes, we'll just show an alert
-    alert("Form submitted successfully!")
-  }
+    e.preventDefault();
+    try {
+      const response = await ApiClient.post("/partnership", formData);
+      console.log("Form submitted successfully:", response.data);
+      toast("Success", {
+        description: "Form submitted successfully!",
+      });
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast.error("Failed to submit the form. Please try again.", {
+        icon: <CircleAlert className="text-red-500" />,
+      });
+    }
+  };
 
   const renderStep = () => {
     switch (currentStep) {
       case 1:
-        return <PersonalInfoStep formData={formData} updateFormData={updateFormData} />
+        return (
+          <PersonalInfoStep
+            formData={formData}
+            updateFormData={updateFormData}
+          />
+        );
       case 2:
-        return <PartnershipWaysStep formData={formData} updateFormData={updateFormData} />
+        return (
+          <PartnershipWaysStep
+            formData={formData}
+            updateFormData={updateFormData}
+          />
+        );
       case 3:
-        return <ProfessionalSupportStep formData={formData} updateFormData={updateFormData} />
+        return (
+          <ProfessionalSupportStep
+            formData={formData}
+            updateFormData={updateFormData}
+          />
+        );
       case 4:
-        return <MaterialSupportStep formData={formData} updateFormData={updateFormData} />
-      case 5:
-        return <ReviewStep formData={formData} />
+        return <ReviewStep formData={formData} />;
       default:
-        return null
+        return null;
     }
-  }
+  };
 
-  const stepTitles = ["Personal Information", "Ways to Partner", "Professional Support", "Material Support", "Review"]
+  const stepTitles = [
+    "Personal Information",
+    "Ways to Partner",
+    "Professional Support",
+    "Review",
+  ];
 
   return (
-    <div className="max-w-4xl mx-auto bg-white shadow-sm rounded-lg p-8">
-      <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">Call for Partnership</h2>
-        <p className="text-gray-600 max-w-3xl mx-auto">
-          Sharon Children's Ministry Ethiopia (SCM) invites you to join us in our mission. We welcome partners from all
-          walks of life to contribute in various capacities.
+    <div className="mx-auto max-w-4xl rounded-lg bg-white p-8 shadow-sm">
+      <div className="mb-8 text-center">
+        <h2 className="mb-2 text-2xl font-bold text-gray-800">
+          Call for Partnership
+        </h2>
+        <p className="mx-auto max-w-3xl text-gray-600">
+          Sharon Children's Ministry Ethiopia (SCM) invites you to join us in
+          our mission. We welcome partners from all walks of life to contribute
+          in various capacities.
         </p>
       </div>
 
       <div className="mb-8">
-        <div className="flex justify-between mb-2">
+        <div className="mb-2 flex justify-between">
           {stepTitles.map((title, index) => (
             <div
               key={index}
               className={`text-center ${
                 currentStep === index + 1
-                  ? "text-blue-600 font-medium"
+                  ? "font-medium text-blue-600"
                   : currentStep > index + 1
                     ? "text-blue-400"
                     : "text-gray-400"
@@ -112,32 +159,54 @@ export default function JoinUsForm() {
             </div>
           ))}
         </div>
-        <div className="w-full bg-gray-200 h-2 rounded-full">
+        <div className="h-2 w-full rounded-full bg-gray-200">
           <div
-            className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+            className="h-2 rounded-full bg-blue-600 transition-all duration-300"
             style={{ width: `${(currentStep / totalSteps) * 100}%` }}
           ></div>
         </div>
       </div>
 
-      <form onSubmit={currentStep === totalSteps ? handleSubmit : (e) => e.preventDefault()}>
+      <form
+        onSubmit={(e) => {
+          if (currentStep === totalSteps) {
+            handleSubmit(e);
+          } else {
+            e.preventDefault();
+          }
+        }}
+      >
         <div className="mb-8">{renderStep()}</div>
 
         <div className="flex justify-between">
-          <Button type="button" variant="outline" onClick={prevStep} disabled={currentStep === 1} className="px-6 py-2">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={prevStep}
+            disabled={currentStep === 1}
+            className="px-6 py-2"
+          >
             Previous
           </Button>
-          {currentStep < totalSteps ? (
-            <Button type="button" onClick={nextStep} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2">
+          {currentStep !== totalSteps && (
+            <Button
+              type="button"
+              onClick={nextStep}
+              className="bg-blue-600 px-6 py-2 text-white hover:bg-blue-700"
+            >
               Next
             </Button>
-          ) : (
-            <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2">
+          )}
+          {currentStep === totalSteps && (
+            <Button
+              type="submit"
+              className="bg-blue-600 px-6 py-2 text-white hover:bg-blue-700"
+            >
               Submit
             </Button>
           )}
         </div>
       </form>
     </div>
-  )
+  );
 }

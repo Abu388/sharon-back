@@ -5,6 +5,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
+import { cn } from "@/lib/utils";
 import { navigationItems } from "@/models/Navroutes";
 import { NavLink } from "react-router-dom";
 const Nav = () => {
@@ -23,7 +24,12 @@ const Nav = () => {
                     <NavLink
                       key={childIndex}
                       to={child.href || "#"}
-                      className="hover:bg-accent flex w-full items-center rounded-md px-6 py-2 text-sm"
+                      className={({ isActive }) =>
+                        cn(
+                          "hover:bg-accent flex w-full items-center rounded-md px-6 py-2 text-sm",
+                          isActive && "bg-neutral-100",
+                        )
+                      }
                     >
                       {child.title}
                     </NavLink>
@@ -36,7 +42,12 @@ const Nav = () => {
           <NavLink
             key={index}
             to={item.href || "#"}
-            className="hover:bg-accent flex w-full items-center rounded-md px-4 py-2 text-sm hover:text-black"
+            className={({ isActive }) =>
+              cn(
+                "hover:bg-accent flex w-full items-center rounded-md px-4 py-2 text-sm hover:text-black",
+                isActive && "bg-neutral-100",
+              )
+            }
           >
             {item.title}
           </NavLink>

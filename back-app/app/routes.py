@@ -45,13 +45,6 @@ def partnership():
             # Convert lists to JSON strings
             partner_ways=json.dumps(data.get('partnerWays', [])),  # Serialize list
             professional_support=json.dumps(data.get('professionalSupport', [])),  # Serialize list
-            material_type1=data.get('materialType1'),
-            material_quantity1=data.get('materialQuantity1'),
-            material_type2=data.get('materialType2'),
-            material_quantity2=data.get('materialQuantity2'),
-            material_type3=data.get('materialType3'),
-            material_quantity3=data.get('materialQuantity3'),
-            message=data['message']
         )
         db.session.add(partnership)
         db.session.commit()

@@ -6,6 +6,7 @@ interface ReviewStepProps {
   formData: {
     // Personal Information
     fullName: string;
+    password: string;
     phone: string;
     address: string;
     email: string;
@@ -19,16 +20,6 @@ interface ReviewStepProps {
     // Professional Support
     professionalSupport: string[];
     otherExpertise: string;
-
-    // Material Support
-    materials: Array<{ type: string; quantity: string }>;
-    message: string;
-
-    // Donation Details
-    customAmount: string;
-    amount: string;
-    frequency: string;
-    paymentMethod: string;
   };
   onReceiptUpload?: (file: File) => void;
 }
@@ -60,10 +51,6 @@ export default function ReviewStep({
   };
 
   // Determine the correct amount to display
-  const donationAmount =
-    formData.customAmount && formData.customAmount !== ""
-      ? formData.customAmount
-      : formData.amount;
   return (
     <div className="space-y-8">
       <div>
@@ -74,98 +61,6 @@ export default function ReviewStep({
           Please review your donation information before submitting.
         </p>
       </div>
-
-      {/* Donation Details */}
-      <div className="space-y-2">
-        <h4 className="border-b pb-2 text-lg font-medium text-gray-700">
-          Donation Details
-        </h4>
-        <div className="grid grid-cols-1 gap-x-8 gap-y-4 pt-2 md:grid-cols-2">
-          <div>
-            <span className="text-gray-500">Amount:</span>
-            <p className="font-medium text-gray-800">${donationAmount}</p>
-          </div>
-          <div>
-            <span className="text-gray-500">Frequency:</span>
-            <p className="font-medium text-gray-800">
-              {formData.frequency === "one-time"
-                ? "One-time"
-                : formData.frequency.charAt(0).toUpperCase() +
-                  formData.frequency.slice(1)}
-            </p>
-          </div>
-          <div>
-            <span className="text-gray-500">Payment Method:</span>
-            <p className="font-medium text-gray-800">
-              {formData.paymentMethod === "credit_card"
-                ? "Credit Card"
-                : formData.paymentMethod === "paypal"
-                  ? "PayPal"
-                  : formData.paymentMethod === "bank_transfer"
-                    ? "Bank Transfer"
-                    : formData.paymentMethod}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Bank Transfer Receipt Upload Section */}
-      {formData.paymentMethod === "bank_transfer" && (
-        <div className="space-y-4 border-t pt-4">
-          <h4 className="text-lg font-medium text-gray-700">
-            Bank Transfer Receipt
-          </h4>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="receipt-upload" className="text-gray-700">
-                Upload your bank transfer receipt
-              </Label>
-              <div className="flex items-center space-x-4">
-                <input
-                  type="file"
-                  id="receipt-upload"
-                  accept="image/*,.pdf"
-                  onChange={handleFileChange}
-                  className="hidden"
-                />
-                <Button
-                  type="button"
-                  onClick={() =>
-                    document.getElementById("receipt-upload")?.click()
-                  }
-                  className="bg-blue-600 text-white hover:bg-blue-700"
-                >
-                  Choose File
-                </Button>
-                {receiptFile && (
-                  <span className="text-sm text-gray-600">
-                    {receiptFile.name}
-                  </span>
-                )}
-              </div>
-              <p className="text-sm text-gray-500">
-                Accepted formats: JPG, PNG, PDF (max 5MB)
-              </p>
-            </div>
-
-            {/* Receipt Preview */}
-            {receiptPreview && (
-              <div className="mt-4">
-                <h5 className="mb-2 text-sm font-medium text-gray-700">
-                  Receipt Preview:
-                </h5>
-                <div className="max-w-md rounded-md border p-2">
-                  <img
-                    src={receiptPreview}
-                    alt="Receipt preview"
-                    className="h-auto max-w-full"
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
 
       {/* Personal Information */}
       <div className="space-y-2">
@@ -261,44 +156,6 @@ export default function ReviewStep({
           </div>
         </div>
       )}
-
-      {/* Material Support */}
-      <div className="space-y-2">
-        <h4 className="border-b pb-2 text-lg font-medium text-gray-700">
-          Material Support
-        </h4>
-        <div className="pt-2">
-          {formData.materials.some((m) => m.type || m.quantity) && (
-            <div className="mb-4">
-              <h5 className="mb-2 font-medium text-gray-600">Materials:</h5>
-              {formData.materials.map((material, index) =>
-                material.type || material.quantity ? (
-                  <div key={index} className="mb-2">
-                    {material.type && (
-                      <span className="text-gray-800">
-                        Type: {material.type}
-                      </span>
-                    )}
-                    {material.type && material.quantity && <span> - </span>}
-                    {material.quantity && (
-                      <span className="text-gray-800">
-                        Quantity: {material.quantity}
-                      </span>
-                    )}
-                  </div>
-                ) : null,
-              )}
-            </div>
-          )}
-
-          <div>
-            <h5 className="mb-2 font-medium text-gray-600">Message:</h5>
-            <p className="whitespace-pre-wrap text-gray-800">
-              {formData.message}
-            </p>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

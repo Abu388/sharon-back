@@ -2,6 +2,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import { useEffect } from "react";
+import { Toaster } from "sonner";
 
 const Layout = () => {
   const location = useLocation();
@@ -19,6 +20,7 @@ const Layout = () => {
       <div className="w-full">
         <Footer />
       </div>
+      <Toaster className="font-[poppins]" />
     </div>
   );
 };

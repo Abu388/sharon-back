@@ -5,24 +5,74 @@ import { Link } from "react-router-dom";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
+import ApiClient from "@/api/ApiClient";
+import { CircleAlert } from "lucide-react";
+import { toast } from "sonner";
+import { z } from "zod";
+import { useState } from "react";
+
+const contactSchema = z.object({
+  fullName: z.string().min(1, "Full Name is required"),
+  email: z.string().email("Invalid email address"),
+  subject: z.string().min(1, "Subject is required"),
+  message: z.string().min(1, "Message is required"),
+});
 
 const Footer = () => {
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const form = e.target as HTMLFormElement;
+    const formData = {
+      fullName: (form.elements.namedItem("fullName") as HTMLInputElement).value,
+      email: (form.elements.namedItem("email") as HTMLInputElement).value,
+      subject: (form.elements.namedItem("subject") as HTMLInputElement).value,
+      message: (form.elements.namedItem("message") as HTMLTextAreaElement)
+        .value,
+    };
+
+    const validation = contactSchema.safeParse(formData);
+
+    if (!validation.success) {
+      toast.error(validation.error.errors[0].message, {
+        icon: <CircleAlert className="text-red-500" />,
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await ApiClient.post("/contact", formData);
+      console.log("Form submitted successfully:", response.data);
+      toast("Success", {
+        description: "Form submitted successfully!",
+      });
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast.error("Failed to submit the form. Please try again.", {
+        icon: <CircleAlert className="text-red-500" />,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="bg-(--blue)/80 py-10 font-[poppins] text-white">
       <div className="mx-auto flex max-w-full flex-col justify-between md:max-w-[80%] md:flex-col lg:max-w-[80%] xl:flex-row-reverse">
-        <div className="flex flex-col space-y-[12px] p-4">
+        <div className="flex flex-1 flex-col space-y-[12px] p-4">
           <h1 className="text-2xl font-light *:hover:text-[#ffb500] md:text-3xl">
             Send us a Message
           </h1>
-          <form className="max-w-300">
-            <div className="flex items-center gap-4">
+          <form onSubmit={handleSubmit} className="max-w-300">
+            <div className="my-4">
               <Input
+                type="text"
                 className="bg-white p-5 text-black"
-                placeholder="First Name"
-              />
-              <Input
-                className="bg-white p-5 text-black"
-                placeholder="Last Name"
+                placeholder="Full Name"
+                name="fullName"
               />
             </div>
             <div className="my-4">
@@ -30,14 +80,27 @@ const Footer = () => {
                 type="email"
                 className="bg-white p-5 text-black"
                 placeholder="Email"
+                name="email"
+              />
+            </div>
+            <div className="my-4">
+              <Input
+                type="text"
+                className="bg-white p-5 text-black"
+                placeholder="Subject"
+                name="subject"
               />
             </div>
             <Textarea
               className="mb-4 bg-white p-5 text-black"
               placeholder="Send us a message"
+              name="message"
             />
-            <Button className="w-full cursor-pointer bg-[#f14d52]/90 text-white hover:bg-[#f14d52]">
-              SEND
+            <Button
+              className="w-full cursor-pointer bg-[#f14d52]/90 text-white hover:bg-[#f14d52]"
+              disabled={loading}
+            >
+              {loading ? "Sending..." : "SEND"}
             </Button>
           </form>
           <div className="space-y-2">
@@ -156,7 +219,9 @@ const Footer = () => {
             <h3 className="text-xl font-bold">Contact Us</h3>
             <ul className="text-white/90 *:block *:w-fit *:hover:text-[#f14d52]">
               <li>
-                <span className="block font-semibold text-white/90">Phone:</span>
+                <span className="block font-semibold text-white/90">
+                  Phone:
+                </span>
                 <a
                   href="tel:+251115575880"
                   className="block text-sm text-white/80 hover:text-[#f14d52] hover:underline"
@@ -165,16 +230,22 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                <span className="block font-semibold text-white/90">Address:</span>
+                <span className="block font-semibold text-white/90">
+                  Address:
+                </span>
                 <span className="block text-sm text-white/80">
                   {/* cspell:disable-next-line */}
-                  P.O.B: 4044 Addis Ababa, Ethiopia<br />
-                  Bole to Wolo Sefer, Kera Taxi Stand, TK Building,<br />
+                  P.O.B: 4044 Addis Ababa, Ethiopia
+                  <br />
+                  Bole to Wolo Sefer, Kera Taxi Stand, TK Building,
+                  <br />
                   near Rank Clinic
                 </span>
               </li>
               <li>
-                <span className="block font-semibold text-white/90">Email:</span>
+                <span className="block font-semibold text-white/90">
+                  Email:
+                </span>
                 <a
                   href="mailto:sharonethiopia@gmail.com"
                   className="block text-sm text-white/80 hover:text-[#f14d52] hover:underline"
