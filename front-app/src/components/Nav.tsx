@@ -11,7 +11,7 @@ import { NavLink } from "react-router-dom";
 const Nav = () => {
   return (
     <nav className="hidden space-x-6 font-[poppins] md:inline-flex">
-      {navigationItems.map((item, index) =>
+      {navigationItems.slice(0,-1).map((item, index) =>
         item.children ? (
           <NavigationMenu>
             <NavigationMenuList>
@@ -27,7 +27,7 @@ const Nav = () => {
                       className={({ isActive }) =>
                         cn(
                           "hover:bg-accent flex w-full items-center rounded-md px-6 py-2 text-sm",
-                          isActive && "bg-neutral-100",
+                          isActive && "bg-neutral-100 text-black",
                         )
                       }
                     >
@@ -45,7 +45,7 @@ const Nav = () => {
             className={({ isActive }) =>
               cn(
                 "hover:bg-accent flex w-full items-center rounded-md px-4 py-2 text-sm hover:text-black",
-                isActive && "bg-neutral-100",
+                isActive && "bg-neutral-100 text-black",
               )
             }
           >

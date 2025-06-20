@@ -5,11 +5,11 @@ export default interface NavItem {
   children?: NavItem[];
 }
 export const navigationItems: NavItem[] = [
-  // {
-  //   title: "Home",
-  //   href: "/",
-  //   description: "Return to the homepage",
-  // },
+  {
+    title: "Home",
+    href: "/",
+    description: "Return to the homepage",
+  },
   // {
   //   title: "Dashboard",
   //   href: "/dashboard",
@@ -41,5 +41,10 @@ export const navigationItems: NavItem[] = [
         description: "View books",
       },
     ],
+  },
+  {
+    title: "Join Us",
+    href: "/join-us",
+    description: "Become a member",
   },
 ];

@@ -25,5 +25,4 @@ class Partnership(db.Model):
     office = db.Column(db.String(100))
     partner_ways = db.Column(db.Text)
     professional_support = db.Column(db.Text)
-    message = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())

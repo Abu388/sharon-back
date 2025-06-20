@@ -49,6 +49,7 @@ const Footer = () => {
       toast("Success", {
         description: "Form submitted successfully!",
       });
+      form.reset();
     } catch (error) {
       console.error("Error submitting form:", error);
       toast.error("Failed to submit the form. Please try again.", {
@@ -66,7 +67,7 @@ const Footer = () => {
           <h1 className="text-2xl font-light *:hover:text-[#ffb500] md:text-3xl">
             Send us a Message
           </h1>
-          <form onSubmit={handleSubmit} className="max-w-300">
+          <form onSubmit={handleSubmit} className="max-w-200">
             <div className="my-4">
               <Input
                 type="text"

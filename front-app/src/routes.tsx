@@ -7,7 +7,7 @@ import Images from "./pages/Images";
 import JoinUs from "./pages/JoinUs/JoinUs";
 import Donation from "./pages/Donation";
 import Books from "./pages/Books";
-import AdminPage from "./pages/admin/AdminPage";
+import Login from "./pages/Login";
 
 const routes = createBrowserRouter([
   {
@@ -20,7 +20,7 @@ const routes = createBrowserRouter([
       { path: "join-us", element: <JoinUs /> },
       { path: "donation", element: <Donation /> },
       { path: "books", element: <Books /> },
-      { path: "dashboard", element: <AdminPage /> },
+      { path: "login", element: <Login /> },
     ],
   },
 ]);
