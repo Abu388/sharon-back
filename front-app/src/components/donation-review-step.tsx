@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 interface DonationReviewStepProps {
   formData: {
@@ -18,9 +18,22 @@ const DonationReviewStep: React.FC<DonationReviewStepProps> = ({
   formData,
   onReceiptUpload,
 }) => {
+  const [receiptPreview, setReceiptPreview] = useState<string | null>(null); // Removed unused `receiptFile` state
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Create preview for images
+      if (file.type.startsWith("image/")) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setReceiptPreview(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        setReceiptPreview(null);
+      }
+      // Notify parent component about the upload
       onReceiptUpload?.(file);
     }
   };
@@ -104,6 +117,16 @@ const DonationReviewStep: React.FC<DonationReviewStepProps> = ({
             onChange={handleFileChange}
             className="block w-full rounded-md border border-gray-300 p-2"
           />
+          {receiptPreview && (
+            <div className="mt-2">
+              <span className="text-gray-500">Receipt Preview:</span>
+              <img
+                src={receiptPreview}
+                alt="Receipt Preview"
+                className="mt-2 max-h-40 rounded-md border"
+              />
+            </div>
+          )}
         </div>
       )}
     </div>
