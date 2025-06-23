@@ -7,7 +7,7 @@ interface ReviewStepProps {
     // Personal Information
     fullName: string;
     password: string;
-    phone: string;
+    phoneNumber: string;
     address: string;
     email: string;
     country: string;
@@ -75,7 +75,7 @@ export default function ReviewStep({
 
           <div>
             <span className="text-gray-500">Phone:</span>
-            <p className="font-medium text-gray-800">{formData.phone}</p>
+            <p className="font-medium text-gray-800">{formData.phoneNumber}</p>
           </div>
 
           <div>

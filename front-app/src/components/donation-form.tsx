@@ -1,17 +1,18 @@
-import type React from "react";
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import DonorInfoStep from "@/components/donor-info-step";
 import DonationAmountStep from "@/components/donation-amount-step";
+import MaterialDonationStep from "../components/material-donation-step";
 import PaymentMethodStep from "@/components/payment-method-step";
 import ReviewStep from "@/components/review-step";
+import DonationTypeStep from "@/components/donation-type-step";
 
 export default function DonationForm() {
   const [formData, setFormData] = useState({
     // Donor Information
     fullName: "",
-    phoneNumber: "",
+    phoneNumber: "", // Updated to match expected property name
+    password: "",
     address: "",
     email: "",
     country: "",
@@ -20,8 +21,11 @@ export default function DonationForm() {
     partnerWays: [] as string[],
     professionalSupport: [] as string[],
     otherExpertise: "",
-    materials: [] as { name: string; quantity: number }[],
+    materials: [] as { name: string; quantity: number; message: string }[],
     message: "",
+
+    // Donation Type
+    donationType: "money", // "money" or "material"
 
     // Donation Amount
     amount: "50",
@@ -33,7 +37,7 @@ export default function DonationForm() {
   });
   const [receiptFile, setReceiptFile] = useState<File | null>(null);
   const [currentStep, setCurrentStep] = useState(1);
-  const totalSteps = 4;
+  const totalSteps = formData.donationType === "money" ? 5 : 4;
 
   const updateFormData = (data: Partial<typeof formData>) => {
     setFormData({ ...formData, ...data });
@@ -118,29 +122,47 @@ export default function DonationForm() {
         );
       case 2:
         return (
-          <DonationAmountStep
+          <DonationTypeStep
             formData={formData}
             updateFormData={updateFormData}
           />
         );
       case 3:
-        return (
-          <PaymentMethodStep
-            formData={formData}
-            updateFormData={updateFormData}
-          />
-        );
+        if (formData.donationType === "money") {
+          return (
+            <DonationAmountStep
+              formData={formData}
+              updateFormData={updateFormData}
+            />
+          );
+        } else {
+          return (
+            <MaterialDonationStep
+              formData={formData}
+              updateFormData={updateFormData}
+            />
+          );
+        }
       case 4:
+        if (formData.donationType === "money") {
+          return (
+            <PaymentMethodStep
+              formData={formData}
+              updateFormData={updateFormData}
+            />
+          );
+        } else {
+          return (
+            <ReviewStep
+              formData={formData}
+              onReceiptUpload={handleReceiptUpload}
+            />
+          );
+        }
+      case 5:
         return (
           <ReviewStep
-            formData={{
-              ...formData,
-              phone: formData.phoneNumber,
-              materials: formData.materials.map((m) => ({
-                type: m.name,
-                quantity: String(m.quantity),
-              })),
-            }}
+            formData={formData}
             onReceiptUpload={handleReceiptUpload}
           />
         );
@@ -149,12 +171,21 @@ export default function DonationForm() {
     }
   };
 
-  const stepTitles = [
-    "Donor Information",
-    "Donation Amount",
-    "Payment Method",
-    "Review",
-  ];
+  const stepTitles =
+    formData.donationType === "money"
+      ? [
+          "Personal Information",
+          "Choose Donation Type",
+          "Donation Amount",
+          "Payment Method",
+          "Review",
+        ]
+      : [
+          "Personal Information",
+          "Choose Donation Type",
+          "Material Donation",
+          "Review",
+        ];
 
   return (
     <div className="mx-auto max-w-4xl rounded-lg bg-white p-8 shadow-sm">
