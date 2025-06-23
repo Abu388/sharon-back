@@ -7,6 +7,7 @@ import ReviewStep from "@/components/review-step";
 import { toast } from "sonner";
 import { CircleAlert } from "lucide-react";
 import ApiClient from "@/api/ApiClient";
+import JoinUsReviewStep from "./join-us-review-step";
 
 export default function JoinUsForm() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -115,7 +116,7 @@ export default function JoinUsForm() {
           />
         );
       case 4:
-        return <ReviewStep formData={formData} />;
+        return <JoinUsReviewStep formData={formData} />;
       default:
         return null;
     }

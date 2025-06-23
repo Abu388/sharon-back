@@ -1,55 +1,21 @@
-import { useState } from "react";
+import React from "react";
 
-interface ReviewStepProps {
+interface JoinUsReviewStepProps {
   formData: {
-    // Personal Information
     fullName: string;
-    password: string;
-    phoneNumber: string;
-    address: string;
+    phone: string;
     email: string;
+    address: string;
     country: string;
     church: string;
     office: string;
-
-    // Ways to Partner
     partnerWays: string[];
-
-    // Professional Support
     professionalSupport: string[];
     otherExpertise: string;
-
-    // Payment Method
-    paymentMethod: string; // Added paymentMethod property
   };
-  onReceiptUpload?: (file: File) => void;
 }
 
-export default function ReviewStep({
-  formData,
-  onReceiptUpload,
-}: ReviewStepProps) {
-  const [receiptPreview, setReceiptPreview] = useState<string | null>(null); // Removed unused `receiptFile` state
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // Create preview for images
-      if (file.type.startsWith("image/")) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setReceiptPreview(reader.result as string);
-        };
-        reader.readAsDataURL(file);
-      } else {
-        setReceiptPreview(null);
-      }
-      // Notify parent component about the upload
-      onReceiptUpload?.(file);
-    }
-  };
-
-  // Determine the correct amount to display
+const JoinUsReviewStep: React.FC<JoinUsReviewStepProps> = ({ formData }) => {
   return (
     <div className="space-y-8">
       <div>
@@ -57,7 +23,7 @@ export default function ReviewStep({
           Review Your Information
         </h3>
         <p className="mt-2 text-gray-600">
-          Please review your donation information before submitting.
+          Please review your information before submitting.
         </p>
       </div>
 
@@ -74,7 +40,7 @@ export default function ReviewStep({
 
           <div>
             <span className="text-gray-500">Phone:</span>
-            <p className="font-medium text-gray-800">{formData.phoneNumber}</p>
+            <p className="font-medium text-gray-800">{formData.phone}</p>
           </div>
 
           <div>
@@ -155,31 +121,8 @@ export default function ReviewStep({
           </div>
         </div>
       )}
-
-      {/* Receipt Upload for Bank Transfer */}
-      {formData.paymentMethod === "bank_transfer" && (
-        <div className="space-y-2">
-          <h4 className="border-b pb-2 text-lg font-medium text-gray-700">
-            Upload Bank Transfer Receipt
-          </h4>
-          <input
-            type="file"
-            accept="image/*,application/pdf"
-            onChange={handleFileChange}
-            className="block w-full rounded-md border border-gray-300 p-2"
-          />
-          {receiptPreview && (
-            <div className="mt-2">
-              <span className="text-gray-500">Receipt Preview:</span>
-              <img
-                src={receiptPreview}
-                alt="Receipt Preview"
-                className="mt-2 max-h-40 rounded-md border"
-              />
-            </div>
-          )}
-        </div>
-      )}
     </div>
   );
-}
+};
+
+export default JoinUsReviewStep;

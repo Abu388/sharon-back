@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import DonorInfoStep from "@/components/donor-info-step";
 import DonationAmountStep from "@/components/donation-amount-step";
 import MaterialDonationStep from "../components/material-donation-step";
 import PaymentMethodStep from "@/components/payment-method-step";
-import ReviewStep from "@/components/review-step";
+import DonationReviewStep from "@/components/donation-review-step";
 import DonationTypeStep from "@/components/donation-type-step";
+import DonorInfoStep from "./donor-info-step";
 
 export default function DonationForm() {
   const [formData, setFormData] = useState({
@@ -21,7 +21,7 @@ export default function DonationForm() {
     partnerWays: [] as string[],
     professionalSupport: [] as string[],
     otherExpertise: "",
-    materials: [] as { name: string; quantity: number; message: string }[],
+    materials: [] as { name: string; quantity: number; }[],
     message: "",
 
     // Donation Type
@@ -153,7 +153,7 @@ export default function DonationForm() {
           );
         } else {
           return (
-            <ReviewStep
+            <DonationReviewStep
               formData={formData}
               onReceiptUpload={handleReceiptUpload}
             />
@@ -161,7 +161,7 @@ export default function DonationForm() {
         }
       case 5:
         return (
-          <ReviewStep
+          <DonationReviewStep
             formData={formData}
             onReceiptUpload={handleReceiptUpload}
           />
