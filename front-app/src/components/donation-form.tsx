@@ -21,7 +21,7 @@ export default function DonationForm() {
     partnerWays: [] as string[],
     professionalSupport: [] as string[],
     otherExpertise: "",
-    materials: [] as { name: string; quantity: number; }[],
+    materials: [] as { name: string; quantity: number }[],
     message: "",
 
     // Donation Type

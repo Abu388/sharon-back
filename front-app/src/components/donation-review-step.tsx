@@ -10,6 +10,9 @@ interface DonationReviewStepProps {
     materials: { name: string; quantity: number }[];
     message: string;
     paymentMethod: string;
+    amount?: string; // Updated to accept string
+    customAmount?: string; // Updated to accept string
+    frequency?: string; // Optional, in case of material donation
   };
   onReceiptUpload?: (file: File) => void;
 }
@@ -102,6 +105,21 @@ const DonationReviewStep: React.FC<DonationReviewStepProps> = ({
               <p className="text-gray-600">Message: {formData.message}</p>
             )}
           </ul>
+        </div>
+      )}
+
+      {/* Donation Amount */}
+      {(formData.amount || formData.customAmount) && (
+        <div className="space-y-2">
+          <h4 className="border-b pb-2 text-lg font-medium text-gray-700">
+            Donation Amount
+          </h4>
+          <p className="text-gray-800">
+            Amount: ${formData.amount || formData.customAmount}
+          </p>
+          {formData.frequency && (
+            <p className="text-gray-600">Frequency: {formData.frequency}</p>
+          )}
         </div>
       )}
 
