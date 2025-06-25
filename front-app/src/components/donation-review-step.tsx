@@ -6,13 +6,13 @@ interface DonationReviewStepProps {
     phoneNumber: string;
     email: string;
     address: string;
-    country: string;
     materials: { name: string; quantity: number }[];
     message: string;
     paymentMethod: string;
     amount?: string; // Updated to accept string
     customAmount?: string; // Updated to accept string
-    frequency?: string; // Optional, in case of material donation
+    frequency?: string;
+    receipt: File | undefined; // Optional, in case of material donation
   };
   onReceiptUpload?: (file: File) => void;
 }
@@ -79,13 +79,6 @@ const DonationReviewStep: React.FC<DonationReviewStepProps> = ({
               <p className="font-medium text-gray-800">{formData.address}</p>
             </div>
           )}
-
-          {formData.country && (
-            <div>
-              <span className="text-gray-500">Country:</span>
-              <p className="font-medium text-gray-800">{formData.country}</p>
-            </div>
-          )}
         </div>
       </div>
 
@@ -133,6 +126,8 @@ const DonationReviewStep: React.FC<DonationReviewStepProps> = ({
             type="file"
             accept="image/*,application/pdf"
             onChange={handleFileChange}
+            name="receipt"
+            id="receipt"
             className="block w-full rounded-md border border-gray-300 p-2"
           />
           {receiptPreview && (

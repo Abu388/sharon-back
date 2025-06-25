@@ -1,11 +1,32 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import ApiClient from "@/api/ApiClient";
 import DonationAmountStep from "@/components/donation-amount-step";
-import MaterialDonationStep from "../components/material-donation-step";
-import PaymentMethodStep from "@/components/payment-method-step";
 import DonationReviewStep from "@/components/donation-review-step";
 import DonationTypeStep from "@/components/donation-type-step";
+import PaymentMethodStep from "@/components/payment-method-step";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { toast } from "sonner";
+import { z } from "zod";
+import MaterialDonationStep from "../components/material-donation-step";
 import DonorInfoStep from "./donor-info-step";
+
+const donationSchema = z.object({
+  fullName: z.string().min(1, "Full name is required"),
+  email: z.string().email("Invalid email address"),
+  phoneNumber: z.string().min(10, "Phone number must be at least 10 digits"),
+  address: z
+    .string()
+    .min(10, "Address is required and must be at least 10 characters")
+    .max(100, "Address must be at most 100 characters"),
+  donationType: z.enum(["money", "material"]),
+  amount: z.string().optional(),
+  frequency: z.enum(["one-time", "monthly", "yearly"]).optional(),
+  paymentMethod: z.enum(["credit_card", "bank_transfer", "paypal"]).optional(),
+  materials: z
+    .array(z.object({ name: z.string(), quantity: z.number() }))
+    .optional(),
+  message: z.string().optional(),
+});
 
 export default function DonationForm() {
   const [formData, setFormData] = useState({
@@ -15,12 +36,6 @@ export default function DonationForm() {
     password: "",
     address: "",
     email: "",
-    country: "",
-    church: "",
-    office: "",
-    partnerWays: [] as string[],
-    professionalSupport: [] as string[],
-    otherExpertise: "",
     materials: [] as { name: string; quantity: number }[],
     message: "",
 
@@ -34,6 +49,7 @@ export default function DonationForm() {
 
     // Payment Method
     paymentMethod: "credit_card",
+    receipt: undefined as File | undefined,
   });
   const [receiptFile, setReceiptFile] = useState<File | null>(null);
   const [currentStep, setCurrentStep] = useState(1);
@@ -44,9 +60,47 @@ export default function DonationForm() {
   };
 
   const nextStep = () => {
-    if (currentStep < totalSteps) {
-      setCurrentStep(currentStep + 1);
-      window.scrollTo(0, 0);
+    try {
+      // Validate current step data
+      switch (currentStep) {
+        case 1:
+          donationSchema
+            .pick({
+              fullName: true,
+              email: true,
+              phoneNumber: true,
+              address: true,
+            })
+            .parse(formData);
+          break;
+        case 2:
+          donationSchema.pick({ donationType: true }).parse(formData);
+          break;
+        case 3:
+          if (formData.donationType === "money") {
+            donationSchema
+              .pick({ amount: true, frequency: true })
+              .parse(formData);
+          } else {
+            donationSchema.pick({ materials: true }).parse(formData);
+          }
+          break;
+        case 4:
+          if (formData.donationType === "money") {
+            donationSchema.pick({ paymentMethod: true }).parse(formData);
+          }
+          break;
+      }
+
+      // Proceed to next step if validation passes
+      if (currentStep < totalSteps) {
+        setCurrentStep(currentStep + 1);
+        window.scrollTo(0, 0);
+      }
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast.error(error.errors.map((err) => err.message).join("\n"));
+      }
     }
   };
 
@@ -75,44 +129,67 @@ export default function DonationForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate receipt upload for bank transfer
-    if (formData.paymentMethod === "bank_transfer" && !receiptFile) {
-      alert("Please upload your bank transfer receipt before submitting");
-      return;
-    }
+    try {
+      // Validate form data
+      const validatedData = donationSchema.parse(formData);
 
-    // Here you would typically:
-    // 1. Create a FormData object
-    // 2. Append the receipt file
-    // 3. Append other form data
-    // 4. Send to your backend
-    const formDataToSend = new FormData();
-    if (receiptFile) {
-      formDataToSend.append("receipt", receiptFile);
-    }
-    Object.entries(formData).forEach(([key, value]) => {
-      if (typeof value === "object") {
-        formDataToSend.append(key, JSON.stringify(value));
-      } else {
-        formDataToSend.append(key, String(value));
+      // Validate receipt upload for bank transfer
+      if (formData.paymentMethod === "bank_transfer" && !receiptFile) {
+        toast.error(
+          "Please upload your bank transfer receipt before submitting",
+        );
+        return;
       }
-    });
 
-    // For demo purposes, we'll just log the data
-    console.log("Donation submitted:", {
-      formData,
-      receiptFile: receiptFile
-        ? {
-            name: receiptFile.name,
-            type: receiptFile.type,
-            size: receiptFile.size,
-          }
-        : null,
-    });
+      // Prepare form data for submission
+      const formDataToSend = new FormData();
+      if (receiptFile) {
+        formDataToSend.append("receipt", receiptFile);
+      }
+      Object.entries(validatedData).forEach(([key, value]) => {
+        if (typeof value === "object") {
+          formDataToSend.append(key, JSON.stringify(value));
+        } else {
+          formDataToSend.append(key, String(value));
+        }
+      });
 
-    // Simulate API call
-    alert("Thank you for your donation! Your receipt has been uploaded.");
+      // Submit to API
+      await ApiClient.post("/donate", formDataToSend);
+
+      toast.success(
+        "Thank you for your donation! Your receipt has been uploaded.",
+      );
+
+      setCurrentStep(1);
+      setFormData({
+        fullName: "",
+        phoneNumber: "",
+        password: "",
+        address: "",
+        email: "",
+        materials: [],
+        message: "",
+        donationType: "money",
+        amount: "50",
+        customAmount: "",
+        frequency: "one-time",
+        paymentMethod: "credit_card",
+        receipt: undefined
+      });
+      setReceiptFile(null);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast.error(error.errors.map((err) => `${err.message} \n`));
+      } else if (error instanceof Error) {
+        toast.error(error.message || "An unexpected error occurred");
+      } else {
+        toast.error("An unexpected error occurred");
+      }
+    }
   };
+
+  const handleReceipt = (file: File) => setReceiptFile(file);
 
   const renderStep = () => {
     switch (currentStep) {
@@ -243,7 +320,7 @@ export default function DonationForm() {
               ⬅ Go Back
             </Button>
           )}
-          {currentStep < totalSteps ? (
+          {currentStep < totalSteps && (
             <Button
               type="button"
               onClick={nextStep}
@@ -251,7 +328,8 @@ export default function DonationForm() {
             >
               Continue
             </Button>
-          ) : (
+          )}
+          {currentStep === totalSteps && (
             <Button
               type="submit"
               className="ml-auto bg-blue-600 px-6 py-2 text-white hover:bg-blue-700"
