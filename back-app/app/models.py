@@ -28,21 +28,14 @@ class Partnership(db.Model):
     professional_support = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
-    class Donation(db.Model):
-     __tablename__ = 'donations'
+class Donation(db.Model):  # <-- Now properly at module level
+    __tablename__ = 'donations'
     id = db.Column(db.Integer, primary_key=True)
     # Donor Information
     full_name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False)
     phone_number = db.Column(db.String(20))
     address = db.Column(db.String(200))
-    country = db.Column(db.String(50))
-    church = db.Column(db.String(100))
-    office = db.Column(db.String(100))
-    partner_ways = db.Column(db.Text)
-    professional_support = db.Column(db.Text)
-    other_expertise = db.Column(db.String(200))
-    message = db.Column(db.Text)
     
     # Donation Details
     donation_type = db.Column(db.String(20), nullable=False)  # 'money' or 'material'
@@ -53,5 +46,6 @@ class Partnership(db.Model):
     
     # Material Donations
     materials = db.Column(db.Text)
+    message = db.Column(db.Text)
     
     created_at = db.Column(db.DateTime, default=datetime.utcnow)

@@ -92,19 +92,13 @@ def handle_donation():
             email=data['email'],
             phone_number=data.get('phoneNumber'),
             address=data.get('address'),
-            country=data.get('country'),
-            church=data.get('church'),
-            office=data.get('office'),
-            partner_ways=json.dumps(data.get('partnerWays', [])),
-            professional_support=json.dumps(data.get('professionalSupport', [])),
-            other_expertise=data.get('otherExpertise'),
-            message=data.get('message'),
             donation_type=data['donationType'],
             amount=float(data.get('amount', 0)) if data.get('donationType') == 'money' else None,
             frequency=data.get('frequency'),
             payment_method=data.get('paymentMethod'),
             receipt_filename=receipt_filename,
-            materials=json.dumps(data.get('materials', []))
+            materials=json.dumps(data.get('materials', [])),
+            message=data.get('message'),
         )
 
         db.session.add(donation)
