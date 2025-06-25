@@ -1,10 +1,10 @@
-from app import create_app
+from application import create_app
 
 app = create_app()
 
 # Create tables if they don't exist
 with app.app_context():
-    from app.models import db  # Ensure this import is correct
+    from application.models import db
     db.create_all()
 
 if __name__ == '__main__':
