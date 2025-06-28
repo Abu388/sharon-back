@@ -21,18 +21,19 @@ const Slideshow = () => {
 
   return (
     <div className="slideshow-container relative min-h-screen">
-      <div className="slideshow-content absolute top-1/2 left-1/2 z-10 -translate-x-1/2 -translate-y-1/2 transform text-center text-white">
-        <h1 className="mb-8 text-3xl leading-tight font-extrabold drop-shadow-lg sm:text-4xl md:text-5xl lg:text-6xl">
+      <div className="slideshow-content absolute top-1/2 left-1/2 z-10 -translate-x-1/2 -translate-y-1/2 transform px-4 text-center text-white sm:px-8">
+        <h1 className="mb-8 text-2xl leading-tight font-extrabold drop-shadow-lg sm:text-3xl md:text-4xl lg:text-5xl">
           Make a Difference—Support Sharon Children Services Today!
         </h1>
-        <div className="slideshow-buttons flex justify-center gap-4 *:cursor-pointer">
+        <div className="slideshow-buttons flex flex-wrap justify-center gap-4">
           <button
-          onClick={()=>navigate('/donation')}
-          className="flex items-center gap-2 rounded-full bg-[#0065ca] px-6 py-3 font-bold text-white transition-colors hover:bg-[#006fdf]">
+            onClick={() => navigate("/donation")}
+            className="flex items-center gap-2 rounded-full bg-[#0065ca] px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-[#006fdf] sm:px-6 sm:py-3 sm:text-base"
+          >
             {/* Lucide: HeartHandshake */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
+              className="h-4 w-4 sm:h-5 sm:w-5"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"

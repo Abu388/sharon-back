@@ -2,24 +2,24 @@ import GoalsSlideshow from "./GoalsSlideshow";
 
 const Goals = () => {
   return (
-    <div className="flex w-full flex-col gap-10 pr-24 md:flex-row md:pr-8">
-      <div className="md:w-full">
+    <div className="flex flex-col gap-4 px-4 py-8 sm:gap-10 sm:px-8 md:flex-row">
+      <div className="w-full md:w-1/2">
         <GoalsSlideshow />
       </div>
-      <div className="w-full py-16">
-        <div className="mb-12">
-          <h2 className="mb-4 text-4xl font-semibold">
+      <div className="w-full py-8">
+        <div className="mb-8">
+          <h2 className="mb-4 text-2xl font-semibold sm:text-4xl">
             How We Work to Improve Lives
           </h2>
         </div>
-        <div className="space-y-8">
+        <div className="space-y-4 sm:space-y-8">
           <div className="flex items-start">
-            <div className="mr-4 text-2xl font-bold">01.</div>
+            <div className="mr-4 text-lg font-bold sm:text-2xl">01.</div>
             <div>
-              <h3 className="text-xl font-semibold">
+              <h3 className="text-base font-semibold sm:text-xl">
                 Ensure the continuity of the church
               </h3>
-              <p className="text-gray-400">
+              <p className="text-sm text-gray-400 sm:text-base">
                 By promoting the spread of the Gospel across generations and
                 establishing intergenerational fellowship that brings children,
                 youth, and adults together.
@@ -27,12 +27,12 @@ const Goals = () => {
             </div>
           </div>
           <div className="flex items-start">
-            <div className="mr-4 text-2xl font-bold">02.</div>
+            <div className="mr-4 text-lg font-bold sm:text-2xl">02.</div>
             <div>
-              <h3 className="text-xl font-semibold">
+              <h3 className="text-base font-semibold sm:text-xl">
                 Provide a life-changing curriculum
               </h3>
-              <p className="text-gray-400">
+              <p className="text-sm text-gray-400 sm:text-base">
                 Supported by resources across the country to help children of
                 all ages become God-fearing, respectful, responsible, and
                 disciplined citizens.
@@ -40,23 +40,13 @@ const Goals = () => {
             </div>
           </div>
           <div className="flex items-start">
-            <div className="mr-4 text-2xl font-bold">03.</div>
+            <div className="mr-4 text-lg font-bold sm:text-2xl">03.</div>
             <div>
-              <h3 className="text-xl font-semibold">
+              <h3 className="text-base font-semibold sm:text-xl">
                 Enable children to experience God’s presence
               </h3>
-              <p className="text-gray-400">Through teaching.</p>
-            </div>
-          </div>
-          <div className="flex items-start">
-            <div className="mr-4 text-2xl font-bold">04.</div>
-            <div>
-              <h3 className="text-xl font-semibold">
-                Work to raise a generation of ministers
-              </h3>
-              <p className="text-gray-400">
-                Who have a divine calling, anointing, and burden to serve
-                children and youth in their respective local churches.
+              <p className="text-sm text-gray-400 sm:text-base">
+                Through teaching.
               </p>
             </div>
           </div>

@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useState } from "react";
 
 interface PersonalInfoStepProps {
   formData: {
@@ -26,6 +26,9 @@ export default function PersonalInfoStep({
     fullName: "",
     phone: "",
     email: "",
+    church: "",
+    address: "",
+    country: "",
     password: "",
   });
 
@@ -49,6 +52,12 @@ export default function PersonalInfoStep({
       newErrors.phone = "";
     }
 
+    if (field === "address" && !formData["address"]) {
+      newErrors.address = "Address is required";
+    } else if (field === "address") {
+      newErrors.address = "";
+    }
+
     if (field === "email") {
       if (!formData.email) {
         newErrors.email = "Email is required";
@@ -67,6 +76,18 @@ export default function PersonalInfoStep({
       } else {
         newErrors.password = "";
       }
+    }
+
+    if (field === "church" && !formData.church) {
+      newErrors.church = "Church is required";
+    } else if (field === "church") {
+      newErrors.church = "";
+    }
+
+    if (field === "country" && !formData.country) {
+      newErrors.country = "country is required";
+    } else if (field === "country") {
+      newErrors.country = "";
     }
 
     setErrors(newErrors);
@@ -151,41 +172,53 @@ export default function PersonalInfoStep({
 
         <div className="space-y-2">
           <Label htmlFor="address" className="text-base text-gray-700">
-            Address
+            Address <span className="text-red-500">*</span>
           </Label>
           <Input
             id="address"
             value={formData.address}
             onChange={(e) => updateFormData({ address: e.target.value })}
+            onBlur={() => handleBlur("address")}
             placeholder="Enter your address"
             className="h-12 text-base"
           />
+          {errors.address && (
+            <p className="text-sm text-red-500">{errors.address}</p>
+          )}
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="country" className="text-base text-gray-700">
-            Country
+            Country <span className="text-red-500">*</span>
           </Label>
           <Input
             id="country"
             value={formData.country}
+            onBlur={() => handleBlur("country")}
             onChange={(e) => updateFormData({ country: e.target.value })}
             placeholder="Enter your country"
             className="h-12 text-base"
           />
+          {errors.country && (
+            <p className="text-sm text-red-500">{errors.country}</p>
+          )}
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="church" className="text-base text-gray-700">
-            Church Where You Worship
+            Church Where You Worship <span className="text-red-500">*</span>
           </Label>
           <Input
             id="church"
             value={formData.church}
             onChange={(e) => updateFormData({ church: e.target.value })}
+            onBlur={() => handleBlur("church")}
             placeholder="Enter your church"
             className="h-12 text-base"
           />
+          {errors.church && (
+            <p className="text-sm text-red-500">{errors.church}</p>
+          )}
         </div>
 
         <div className="space-y-2">

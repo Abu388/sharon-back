@@ -102,7 +102,7 @@ const DonationReviewStep: React.FC<DonationReviewStepProps> = ({
       )}
 
       {/* Donation Amount */}
-      {(formData.amount || formData.customAmount) && (
+      {!formData.materials && (formData.amount || formData.customAmount) && (
         <div className="space-y-2">
           <h4 className="border-b pb-2 text-lg font-medium text-gray-700">
             Donation Amount

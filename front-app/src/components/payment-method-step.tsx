@@ -46,8 +46,12 @@ export default function PaymentMethodStep({
               <SelectValue placeholder="Select payment method" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="credit_card">Credit Card</SelectItem>
-              <SelectItem value="paypal">PayPal</SelectItem>
+              <SelectItem value="credit_card" disabled>
+                Credit Card
+              </SelectItem>
+              <SelectItem value="paypal" disabled>
+                PayPal
+              </SelectItem>
               <SelectItem value="bank_transfer">Bank Transfer</SelectItem>
             </SelectContent>
           </Select>
@@ -88,26 +92,28 @@ export default function PaymentMethodStep({
           <div className="mt-6 rounded-md bg-gray-50 p-4">
             <p className="mb-4 text-gray-600">
               After confirming your donation, you will receive bank transfer
-              instructions via email.
+              instructions via SMS.
             </p>
             <div className="space-y-2 text-sm">
               <div className="grid grid-cols-3">
                 <span className="text-gray-500">Bank Name:</span>
                 <span className="col-span-2 font-medium">
-                  Sharon Children's Services Bank
+                  Commercial Bank of Ethiopia, Arada Branch
                 </span>
               </div>
               <div className="grid grid-cols-3">
                 <span className="text-gray-500">Account Name:</span>
                 <span className="col-span-2 font-medium">
-                  Sharon Children's Services
+                  Sharon Children's Ministry Ethiopia
                 </span>
               </div>
               <div className="grid grid-cols-3">
-                <span className="text-gray-500">Reference:</span>
-                <span className="col-span-2 font-medium">
-                  Donation - [Your Name]
-                </span>
+                <span className="text-gray-500">Account Number:</span>
+                <span className="col-span-2 font-medium">1000004327601</span>
+              </div>
+              <div className="grid grid-cols-3">
+                <span className="text-gray-500">SWIFT Code:</span>
+                <span className="col-span-2 font-medium">CBETETAA</span>
               </div>
             </div>
           </div>

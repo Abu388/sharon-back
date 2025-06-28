@@ -1,13 +1,31 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import PersonalInfoStep from "@/components/personal-info-step";
-import PartnershipWaysStep from "@/components/partnership-ways-step";
-import ProfessionalSupportStep from "@/components/professional-support-step";
-import ReviewStep from "@/components/review-step";
-import { toast } from "sonner";
-import { CircleAlert } from "lucide-react";
 import ApiClient from "@/api/ApiClient";
+import PartnershipWaysStep from "@/components/partnership-ways-step";
+import PersonalInfoStep from "@/components/personal-info-step";
+import ProfessionalSupportStep from "@/components/professional-support-step";
+import { Button } from "@/components/ui/button";
+import { CircleAlert } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 import JoinUsReviewStep from "./join-us-review-step";
+
+interface JoinUsForm {
+  // Personal Information
+  fullName: string;
+  phone: string;
+  password: string;
+  address: string;
+  email: string;
+  country: string;
+  church: string;
+  office: string;
+
+  // Ways to Partner
+  partnerWays: string[];
+
+  // Professional Support
+  professionalSupport: string[];
+  otherExpertise: string;
+}
 
 export default function JoinUsForm() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -42,8 +60,9 @@ export default function JoinUsForm() {
         return (
           formData.fullName &&
           formData.email &&
-          formData.phone &&
-          formData.password
+          formData.phone.length > 6 &&
+          formData.password &&
+          formData.church
         );
       case 2:
         return formData.partnerWays.length > 0;
@@ -79,10 +98,37 @@ export default function JoinUsForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await ApiClient.post("/partnership", formData);
+      // before sending the data merge the professional support and other expertise
+
+      let mergedProfessionalSupport = [...formData.professionalSupport];
+      if (
+        formData.otherExpertise &&
+        !mergedProfessionalSupport.includes(formData.otherExpertise)
+      ) {
+        mergedProfessionalSupport.push(formData.otherExpertise);
+      }
+
+      const response = await ApiClient.post("/partnership", {
+        ...formData,
+        professionalSupport: mergedProfessionalSupport,
+      });
       console.log("Form submitted successfully:", response.data);
       toast("Success", {
         description: "Form submitted successfully!",
+      });
+      setCurrentStep(1);
+      setFormData({
+        fullName: "",
+        phone: "",
+        password: "",
+        address: "",
+        email: "",
+        country: "",
+        church: "",
+        office: "",
+        partnerWays: [],
+        professionalSupport: [],
+        otherExpertise: "",
       });
     } catch (error) {
       console.error("Error submitting form:", error);

@@ -20,11 +20,9 @@ const donationSchema = z.object({
     .max(100, "Address must be at most 100 characters"),
   donationType: z.enum(["money", "material"]),
   amount: z.string().optional(),
-  frequency: z.enum(["one-time", "monthly", "yearly"]).optional(),
+  frequency: z.enum(["one-time", "monthly", "annually"]).optional(),
   paymentMethod: z.enum(["credit_card", "bank_transfer", "paypal"]).optional(),
-  materials: z
-    .array(z.object({ name: z.string(), quantity: z.number() }))
-    .optional(),
+  materials: z.array(z.object({ name: z.string(), quantity: z.number() })),
   message: z.string().optional(),
 });
 
@@ -144,9 +142,16 @@ export default function DonationForm() {
       // Prepare form data for submission
       const formDataToSend = new FormData();
       if (receiptFile) {
-        formDataToSend.append("receipt", receiptFile);
+        formDataToSend.append("receipt", receiptFile, receiptFile.name); // Ensure file is sent with its name
       }
       Object.entries(validatedData).forEach(([key, value]) => {
+        // Only include money donation fields if donationType is "money"
+        if (
+          formData.donationType === "material" &&
+          (key === "amount" || key === "frequency" || key === "paymentMethod")
+        ) {
+          return;
+        }
         if (typeof value === "object") {
           formDataToSend.append(key, JSON.stringify(value));
         } else {
@@ -155,7 +160,16 @@ export default function DonationForm() {
       });
 
       // Submit to API
-      await ApiClient.post("/donate", formDataToSend);
+      const response = await ApiClient.post("/donate", formDataToSend, {
+        headers: {
+          "Content-Type": "multipart/form-data", // Ensure correct content type
+        },
+      });
+
+      if (response.status < 200 || response.status >= 300) {
+        const errorData = response.data;
+        throw new Error(errorData.message || "Failed to submit donation");
+      }
 
       toast.success(
         "Thank you for your donation! Your receipt has been uploaded.",
@@ -174,22 +188,20 @@ export default function DonationForm() {
         amount: "50",
         customAmount: "",
         frequency: "one-time",
-        paymentMethod: "credit_card",
-        receipt: undefined
+        paymentMethod: "bank_transfer",
+        receipt: undefined,
       });
       setReceiptFile(null);
-    } catch (error) {
+    } catch (error: any) {
       if (error instanceof z.ZodError) {
         toast.error(error.errors.map((err) => `${err.message} \n`));
-      } else if (error instanceof Error) {
-        toast.error(error.message || "An unexpected error occurred");
       } else {
-        toast.error("An unexpected error occurred");
+        toast.error(
+          error.response.data.message ?? "An unexpected error occurred",
+        );
       }
     }
   };
-
-  const handleReceipt = (file: File) => setReceiptFile(file);
 
   const renderStep = () => {
     switch (currentStep) {
