@@ -1,7 +1,8 @@
 import os
 
 class Config:
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:Helium%408271@localhost/sharon'
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+    SQLALCHEMY_ENGINE_OPTIONS = {"connect_args": {"sslmode": "require"}}
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = os.getenv('SECRET_KEY', 'yabbby')  # Default to 'yabbby'
     UPLOAD_FOLDER = 'uploads/receipts'
