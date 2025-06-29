@@ -16,7 +16,7 @@ const Nav = () => {
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-black">
+                <NavigationMenuTrigger className="hover:text-black bg-transparent">
                   {item.title}
                 </NavigationMenuTrigger>
                 <NavigationMenuContent className="w-full">
@@ -27,7 +27,7 @@ const Nav = () => {
                       className={({ isActive }) =>
                         cn(
                           "hover:bg-accent flex w-full items-center rounded-md px-6 py-2 text-sm",
-                          isActive && "bg-neutral-100 text-black",
+                          isActive && "bg-neutral-300 text-black",
                         )
                       }
                     >
@@ -45,7 +45,7 @@ const Nav = () => {
             className={({ isActive }) =>
               cn(
                 "hover:bg-accent flex w-full items-center rounded-md px-4 py-2 text-sm hover:text-black",
-                isActive && "bg-neutral-100 text-black",
+                isActive && "bg-neutral-200 text-black",
               )
             }
           >

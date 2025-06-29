@@ -2,11 +2,11 @@ import GoalsSlideshow from "./GoalsSlideshow";
 
 const Goals = () => {
   return (
-    <div className="flex flex-col gap-4 px-8 md:flex-row">
+    <div className="flex flex-col gap-4  md:flex-row">
       <div className="w-full ">
         <GoalsSlideshow />
       </div>
-      <div className="w-full py-8">
+      <div className="w-full py-8 px-8">
         <div className="mb-8">
           <h2 className="mb-4 text-2xl font-semibold sm:text-4xl">
             How We Work to Improve Lives

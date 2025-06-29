@@ -4,6 +4,7 @@ interface DonationReviewStepProps {
   formData: {
     fullName: string;
     phoneNumber: string;
+    donationType: string;
     email: string;
     address: string;
     materials: { name: string; quantity: number }[];
@@ -83,7 +84,7 @@ const DonationReviewStep: React.FC<DonationReviewStepProps> = ({
       </div>
 
       {/* Material Donation */}
-      {formData.materials.length > 0 && (
+      {formData.donationType === "material" && (
         <div className="space-y-2">
           <h4 className="border-b pb-2 text-lg font-medium text-gray-700">
             Material Donation
@@ -102,46 +103,50 @@ const DonationReviewStep: React.FC<DonationReviewStepProps> = ({
       )}
 
       {/* Donation Amount */}
-      {!formData.materials && (formData.amount || formData.customAmount) && (
-        <div className="space-y-2">
-          <h4 className="border-b pb-2 text-lg font-medium text-gray-700">
-            Donation Amount
-          </h4>
-          <p className="text-gray-800">
-            Amount: ${formData.amount || formData.customAmount}
-          </p>
-          {formData.frequency && (
-            <p className="text-gray-600">Frequency: {formData.frequency}</p>
-          )}
-        </div>
-      )}
+      {formData.donationType === "money" &&
+        (formData.amount || formData.customAmount) && (
+          <>
+            <div className="space-y-2">
+              <h4 className="border-b pb-2 text-lg font-medium text-gray-700">
+                Donation Amount
+              </h4>
+              <p className="text-gray-800">
+                Amount: ${formData.amount || formData.customAmount}
+              </p>
+              {formData.frequency && (
+                <p className="text-gray-600">Frequency: {formData.frequency}</p>
+              )}
+            </div>
+            {formData.paymentMethod === "bank_transfer" &&
+              formData.donationType && (
+                <div className="space-y-2">
+                  <h4 className="border-b pb-2 text-lg font-medium text-gray-700">
+                    Upload Bank Transfer Receipt
+                  </h4>
+                  <input
+                    type="file"
+                    accept="image/*,application/pdf"
+                    onChange={handleFileChange}
+                    name="receipt"
+                    id="receipt"
+                    className="block w-full rounded-md border border-gray-300 p-2"
+                  />
+                  {receiptPreview && (
+                    <div className="mt-2">
+                      <span className="text-gray-500">Receipt Preview:</span>
+                      <img
+                        src={receiptPreview}
+                        alt="Receipt Preview"
+                        className="mt-2 max-h-40 rounded-md border"
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
+          </>
+        )}
 
       {/* Receipt Upload for Bank Transfer */}
-      {formData.paymentMethod === "bank_transfer" && (
-        <div className="space-y-2">
-          <h4 className="border-b pb-2 text-lg font-medium text-gray-700">
-            Upload Bank Transfer Receipt
-          </h4>
-          <input
-            type="file"
-            accept="image/*,application/pdf"
-            onChange={handleFileChange}
-            name="receipt"
-            id="receipt"
-            className="block w-full rounded-md border border-gray-300 p-2"
-          />
-          {receiptPreview && (
-            <div className="mt-2">
-              <span className="text-gray-500">Receipt Preview:</span>
-              <img
-                src={receiptPreview}
-                alt="Receipt Preview"
-                className="mt-2 max-h-40 rounded-md border"
-              />
-            </div>
-          )}
-        </div>
-      )}
     </div>
   );
 };

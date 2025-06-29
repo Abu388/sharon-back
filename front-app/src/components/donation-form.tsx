@@ -46,7 +46,7 @@ export default function DonationForm() {
     frequency: "one-time",
 
     // Payment Method
-    paymentMethod: "credit_card",
+    paymentMethod: "bank_transfer",
     receipt: undefined as File | undefined,
   });
   const [receiptFile, setReceiptFile] = useState<File | null>(null);
@@ -132,7 +132,11 @@ export default function DonationForm() {
       const validatedData = donationSchema.parse(formData);
 
       // Validate receipt upload for bank transfer
-      if (formData.paymentMethod === "bank_transfer" && !receiptFile) {
+      if (
+        formData.donationType === "money" &&
+        formData.paymentMethod === "bank_transfer" &&
+        !receiptFile
+      ) {
         toast.error(
           "Please upload your bank transfer receipt before submitting",
         );
@@ -149,6 +153,12 @@ export default function DonationForm() {
         if (
           formData.donationType === "material" &&
           (key === "amount" || key === "frequency" || key === "paymentMethod")
+        ) {
+          return;
+        }
+        if (
+          formData.donationType === "money" &&
+          (key === "materials" || key === "message")
         ) {
           return;
         }

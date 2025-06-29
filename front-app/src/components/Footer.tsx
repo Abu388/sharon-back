@@ -115,17 +115,6 @@ const Footer = () => {
                   aria-label="Facebook"
                   className="transition-colors hover:text-[#f14d52]"
                 >
-                  {/* TikTok SVG icon */}
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://twitter.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="tiktok"
-                  className="transition-colors hover:text-[#f14d52]"
-                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     x="0px"
@@ -248,10 +237,8 @@ const Footer = () => {
           &copy; 2025 Sharon Children’s Services Ethiopia. All Rights Reserved.
         </p>
         <p className="*:hover:text-[#f14d52] *:hover:underline">
-          <a href="#contact">
-            <Link to="/Contact">Contact Us</Link>
-          </a>{" "}
-          | <a href="#privacy">Privacy Policy</a> |{" "}
+          <a href="#contact">Contact Us</a> |{" "}
+          <a href="#privacy">Privacy Policy</a> |{" "}
           <a href="#terms">Terms of Service</a>
         </p>
         <p className="mt-4 text-xs text-white/70">
