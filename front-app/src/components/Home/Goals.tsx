@@ -2,7 +2,7 @@ import GoalsSlideshow from "./GoalsSlideshow";
 
 const Goals = () => {
   return (
-    <div className="flex flex-col gap-4 px-4 py-8 sm:gap-10 sm:px-8 md:flex-row">
+    <div className="flex flex-col gap-4 md:flex-row">
       <div className="w-full md:w-1/2">
         <GoalsSlideshow />
       </div>

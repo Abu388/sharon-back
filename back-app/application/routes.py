@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, current_app
+from flask import Blueprint, request, jsonify, current_app, send_file
 from .models import db, Contact, Partnership, Donation
 import json
 import os
@@ -121,10 +121,11 @@ def get_contacts():
         contact_list = [
             {
                 "id": contact.id,
-                "fullName": contact.full_name,
+                "sender": contact.full_name,
                 "email": contact.email,
                 "subject": contact.subject,
-                "message": contact.message,
+                "fullContent": contact.message,
+                "date":contact.created_at,
             }
             for contact in contacts
         ]
@@ -151,6 +152,7 @@ def get_donations():
                 "receiptFilename": donation.receipt_filename,
                 "materials": json.loads(donation.materials),
                 "message": donation.message,
+                "date": donation.created_at
             }
             for donation in donations
         ]
@@ -182,3 +184,17 @@ def get_members():
     except Exception as e:
         current_app.logger.error(f"Error fetching members: {str(e)}")
         return jsonify({"status": "error", "message": "Failed to fetch members", "error": str(e)}), 500
+
+@bp.route('/api/receipt/<filename>', methods=['GET'])
+def get_receipt(filename):
+    try:
+        upload_folder = os.path.join(current_app.root_path, 'uploads/receipts')
+        receipt_path = os.path.join(upload_folder, filename)
+
+        if not os.path.exists(receipt_path):
+            return jsonify({"status": "error", "message": "Receipt not found"}), 404
+
+        return send_file(receipt_path, as_attachment=True)
+    except Exception as e:
+        current_app.logger.error(f"Error fetching receipt: {str(e)}")
+        return jsonify({"status": "error", "message": "Failed to fetch receipt", "error": str(e)}), 500
