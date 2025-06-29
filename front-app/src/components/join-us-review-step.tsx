@@ -9,7 +9,8 @@ interface JoinUsReviewStepProps {
     country: string;
     church: string;
     office: string;
-    partnerWays: string[];
+    otherSupport: string[];
+    prayerSupport: string[];
     professionalSupport: string[];
     otherExpertise: string;
   };
@@ -79,13 +80,27 @@ const JoinUsReviewStep: React.FC<JoinUsReviewStepProps> = ({ formData }) => {
       </div>
 
       {/* Ways to Partner */}
-      {formData.partnerWays.length > 0 && (
+      {formData.prayerSupport.length > 0 && (
         <div className="space-y-2">
           <h4 className="border-b pb-2 text-lg font-medium text-gray-700">
-            Ways to Partner
+            Ways to Partner: prayer support
           </h4>
           <ul className="list-disc space-y-1 pt-2 pl-5">
-            {formData.partnerWays.map((way, index) => (
+            {formData.prayerSupport.map((way, index) => (
+              <li key={index} className="text-gray-800">
+                {way}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {formData.otherSupport.length > 0 && (
+        <div className="space-y-2">
+          <h4 className="border-b pb-2 text-lg font-medium text-gray-700">
+            Ways to Partner: other ways
+          </h4>
+          <ul className="list-disc space-y-1 pt-2 pl-5">
+            {formData.otherSupport.map((way, index) => (
               <li key={index} className="text-gray-800">
                 {way}
               </li>

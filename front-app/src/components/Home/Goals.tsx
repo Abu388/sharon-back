@@ -2,8 +2,8 @@ import GoalsSlideshow from "./GoalsSlideshow";
 
 const Goals = () => {
   return (
-    <div className="flex flex-col gap-4 md:flex-row">
-      <div className="w-full md:w-1/2">
+    <div className="flex flex-col gap-4 px-8 md:flex-row">
+      <div className="w-full ">
         <GoalsSlideshow />
       </div>
       <div className="w-full py-8">
@@ -39,14 +39,25 @@ const Goals = () => {
               </p>
             </div>
           </div>
-          <div className="flex items-start">
+            <div className="flex items-start">
             <div className="mr-4 text-lg font-bold sm:text-2xl">03.</div>
             <div>
               <h3 className="text-base font-semibold sm:text-xl">
-                Enable children to experience God’s presence
+              Enable children to experience God’s presence
               </h3>
               <p className="text-sm text-gray-400 sm:text-base">
-                Through teaching.
+              Through teaching.
+              </p>
+            </div>
+            </div>
+          <div className="flex items-start">
+            <div className="mr-4 text-lg font-bold sm:text-2xl">04.</div>
+            <div>
+              <h3 className="text-base font-semibold sm:text-xl">
+                Work to raise a generation of ministers
+              </h3>
+              <p className="text-sm text-gray-400 sm:text-base">
+                Who have a divine calling, anointing, and burden to serve children and youth in their respective local churches.
               </p>
             </div>
           </div>

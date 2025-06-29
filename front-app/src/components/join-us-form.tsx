@@ -20,6 +20,8 @@ interface JoinUsForm {
   office: string;
 
   // Ways to Partner
+  otherSupport: string[];
+  prayerSupport: string[];
   partnerWays: string[];
 
   // Professional Support
@@ -41,7 +43,8 @@ export default function JoinUsForm() {
     office: "",
 
     // Ways to Partner
-    partnerWays: [] as string[],
+    otherSupport: [] as string[],
+    prayerSupport: [] as string[],
 
     // Professional Support
     professionalSupport: [] as string[],
@@ -65,10 +68,14 @@ export default function JoinUsForm() {
           formData.church
         );
       case 2:
-        return formData.partnerWays.length > 0;
+        // return formData.partnerWays.length > 0;
+        return true;
       case 3:
         return (
-          formData.professionalSupport.length > 0 || formData.otherExpertise
+          formData.professionalSupport.length > 0 ||
+          formData.otherExpertise ||
+          formData.otherSupport.length > 0 ||
+          formData.prayerSupport.length > 0
         );
       default:
         return true;
@@ -126,7 +133,8 @@ export default function JoinUsForm() {
         country: "",
         church: "",
         office: "",
-        partnerWays: [],
+        otherSupport: [],
+        prayerSupport: [],
         professionalSupport: [],
         otherExpertise: "",
       });
@@ -235,13 +243,19 @@ export default function JoinUsForm() {
           >
             Previous
           </Button>
-          {currentStep !== totalSteps && (
+          {currentStep < totalSteps && (
             <Button
               type="button"
               onClick={nextStep}
               className="bg-blue-600 px-6 py-2 text-white hover:bg-blue-700"
             >
-              Next
+              {currentStep === 2 &&
+              (formData.otherSupport.length > 0 ||
+                formData.prayerSupport.length > 0)
+                ? "Next"
+                : currentStep === 2
+                  ? "Skip"
+                  : "Next"}
             </Button>
           )}
           {currentStep === totalSteps && (

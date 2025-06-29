@@ -35,23 +35,46 @@ def partnership():
         data = request.get_json()
         if not data:
             return jsonify({"status": "error", "message": "No data provided"}), 400
-        
+
+        # Extract support fields
+        prayer_support = data.get('prayerSupport', [])
+        other_support = data.get('otherSupport', [])
+        professional_support = data.get('professionalSupport', [])
+
+        # Determine category
+        has_prayer = bool(prayer_support)
+        has_other = bool(other_support)
+        has_professional = bool(professional_support)
+
+        if has_prayer and not has_other and not has_professional:
+            category = "prayer"
+        elif has_other and not has_prayer and not has_professional:
+            category = "other"
+        elif has_professional and not has_prayer and not has_other:
+            category = "professional"
+        elif has_prayer and has_professional and not has_other:
+            category = "both"
+        else:
+            category = "mixed"
+
         partnership = Partnership(
-            full_name=data['fullName'],  # Change key to match the request body
+            full_name=data['fullName'],
             email=data['email'],
             phone=data.get('phone'),
             address=data.get('address'),
             country=data.get('country'),
             church=data.get('church'),
             office=data.get('office'),
-            partner_ways=json.dumps(data.get('partnerWays', [])),
-            professional_support=json.dumps(data.get('professionalSupport', [])),
+            prayer_support=json.dumps(prayer_support),
+            other_support=json.dumps(other_support),
+            professional_support=json.dumps(professional_support),
+            category=category
         )
         db.session.add(partnership)
         db.session.commit()
-        
+
         print('Partnership Data:', data)
-        return jsonify({"status": "success", "data_received": data}), 200
+        return jsonify({"status": "success", "data_received": data, "category": category}), 200
     except Exception as e:
         db.session.rollback()
         print(f"Error processing partnership data: {e}")
@@ -168,15 +191,15 @@ def get_members():
         member_list = [
             {
                 "id": member.id,
-                "fullName": member.full_name,
+                "name": member.full_name,
                 "email": member.email,
                 "phone": member.phone,
                 "address": member.address,
                 "country": member.country,
                 "church": member.church,
                 "office": member.office,
-                "partnerWays": json.loads(member.partner_ways),
-                "professionalSupport": json.loads(member.professional_support),
+                "joinDate": member.created_at,
+                "category": member.category
             }
             for member in members
         ]

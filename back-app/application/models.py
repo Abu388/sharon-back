@@ -22,8 +22,10 @@ class Partnership(db.Model):
     country = db.Column(db.String(100))
     church = db.Column(db.String(100))
     office = db.Column(db.String(100))
-    partner_ways = db.Column(db.Text)
+    other_support = db.Column(db.Text)
+    prayer_support = db.Column(db.Text)
     professional_support = db.Column(db.Text)
+    category = db.Column(db.String(100))
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
 class Donation(db.Model):  # <-- Now properly at module level
