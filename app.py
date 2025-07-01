@@ -1,8 +1,7 @@
 from application import create_app
-from flask_cors import CORS
+import os
 
 app = create_app()
-CORS(app)
 
 # Create tables if they don't exist
 with app.app_context():
@@ -10,4 +9,7 @@ with app.app_context():
     db.create_all()
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))  # Use Render's PORT or default 5000
+    app.run(host="0.0.0.0", port=port, debug=True)
+
+print("Tables created successfully!")
